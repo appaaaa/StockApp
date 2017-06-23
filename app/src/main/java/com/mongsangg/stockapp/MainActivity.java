@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     Button companyListBtn;
     Button buyBtn;
     Button sellBtn;
-    String selectedCompany = "없음";
+    String selectedCompany = "회사선택";
     int indexCompany = 0;
 
     TextView priceTxt;
@@ -83,11 +84,42 @@ public class MainActivity extends AppCompatActivity {
 
     TextView textviewSave;
 
+    Integer checkSellBuy = 1;
+
+//// + dialog3
+    TextView textviewCount3;
+    Button buttonTick1;
+    Button buttonTick2;
+    Button buttonCurrent;
+    Button buttonBack3;
+    Button buttonReset3;
+    Button buttonOne3;
+    Button buttonTwo3;
+    Button buttonThree3;
+    Button buttonFour3;
+    Button buttonFive3;
+    Button buttonSix3;
+    Button buttonSeven3;
+    Button buttonEight3;
+    Button buttonNine3;
+    Button buttonZero3;
+    Button buttonZeroZero3;
+    Button buttonZeroZeroZero3;
+    Button buttonSubmit3;
+    Button buttonCancle3;
+
+    Integer number3;
+    Integer checkNumOk = 0;
+    Integer checkPriceOk = 0;
+
+    CheckBox checkbox;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkbox = (CheckBox)findViewById(R.id.checkbox1);
         buttonFinal = (Button)findViewById(R.id.button_final);
         buttonSave = (Button)findViewById(R.id.button_save);
         textviewSave = (TextView) findViewById(R.id.textview_save);
@@ -180,6 +212,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 layoutMain.setBackgroundResource(R.drawable.back_1);
                 layoutCheck.setVisibility(View.VISIBLE);
+                numberBtn.setText("0");
+                checkSellBuy = 1;
+                check = 1;
             }
         });
 
@@ -189,7 +224,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 layoutMain.setBackgroundResource(R.drawable.back_2);
                 layoutCheck.setVisibility(View.INVISIBLE);
+                numberBtn.setText("0");
                 check = 1;
+                checkSellBuy = 2;
             }
         });
 
@@ -197,20 +234,35 @@ public class MainActivity extends AppCompatActivity {
         priceBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                layoutInput3.setVisibility(View.VISIBLE);
-                layoutInput1.setVisibility(View.GONE);
-                layoutInput2.setVisibility(View.GONE);
-                check = 2;
+                if(companyListBtn.getText().equals("회사선택")) {
+                    Toast toast = Toast.makeText(MainActivity.this, "회사를 먼저 선택하세요.", Toast.LENGTH_SHORT);
+                    toast.show();
+                }else {
+                    layoutInput3.setVisibility(View.VISIBLE);
+                    layoutInput1.setVisibility(View.GONE);
+                    layoutInput2.setVisibility(View.GONE);
+                    textviewCount3.setText(nf.format(valueX));
+                    number3 = valueX;
+                }
+
             }
         });
         numberBtn = (Button)findViewById(R.id.button_number);
         numberBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                layoutInput1.setVisibility(View.VISIBLE);
-                layoutInput2.setVisibility(View.GONE);
-                layoutInput3.setVisibility(View.GONE);
-                check = 1;
+                if(companyListBtn.getText().equals("회사선택")) {
+                    Toast toast = Toast.makeText(MainActivity.this, "회사를 먼저 선택하세요.", Toast.LENGTH_SHORT);
+                    toast.show();
+                }else {
+                    calPriceTxt1.setText("0");
+                    countTxt1.setText("0");
+                    countStr = "0";
+                    layoutInput1.setVisibility(View.VISIBLE);
+                    layoutInput2.setVisibility(View.GONE);
+                    layoutInput3.setVisibility(View.GONE);
+                    check = 1;
+                }
 
             }
         });
@@ -243,9 +295,68 @@ public class MainActivity extends AppCompatActivity {
         buttonFinal.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Toast toast = Toast.makeText(MainActivity.this, "현금매수가 완료되었습니다.", Toast.LENGTH_SHORT);
-                String s = textviewSave.getText() + "\n" + selectedCompany + " " + numberBtn.getText() + " 주가 매수되었습니다.";
-                textviewSave.setText(s);
+                if(checkSellBuy == 1) {
+                    if(checkNumOk == 1 && checkPriceOk == 1){
+                        if(checkbox.isChecked()) {
+                            String toastStr = selectedCompany + " " + numberBtn.getText() + " 주(주당 : " + priceBtn.getText() + "원)" + "가 매수되었습니다(미수)";
+                            String s = textviewSave.getText() + "\n" + toastStr;
+                            textviewSave.setText(s);
+                            Toast toast = Toast.makeText(MainActivity.this, toastStr, Toast.LENGTH_SHORT);
+                            toast.show();
+                            checkNumOk = 0;
+                            checkPriceOk = 0;
+                            priceBtn.setText("0");
+                            numberBtn.setText("0");
+                        }else{
+                            String toastStr = selectedCompany + " " + numberBtn.getText() + " 주(주당 : " + priceBtn.getText() + "원)" + "가 매수되었습니다.";
+                            String s = textviewSave.getText() + "\n" + toastStr;
+                            textviewSave.setText(s);
+                            Toast toast = Toast.makeText(MainActivity.this, toastStr, Toast.LENGTH_SHORT);
+                            toast.show();
+                            checkNumOk = 0;
+                            checkPriceOk = 0;
+                            priceBtn.setText("0");
+                            numberBtn.setText("0");
+                        }
+                    }
+                    else if(checkNumOk == 1 && checkPriceOk != 1){
+                        Toast toast = Toast.makeText(MainActivity.this, "가격을 입력하셔야 합니다.", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                    else if(checkNumOk != 1&& checkPriceOk == 1){
+                        Toast toast = Toast.makeText(MainActivity.this, "수량을 입력하셔야 합니다.", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                    else{
+                        Toast toast = Toast.makeText(MainActivity.this, "가격과 수량을 입력하셔야 합니다.", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                }else if(checkSellBuy == 2){
+                    if(checkNumOk == 1 && checkPriceOk == 1){
+                        String toastStr = selectedCompany + " " + numberBtn.getText() + " 주(주당 : " + priceBtn.getText()+"원)" + "가 매도되었습니다.";
+                        String s = textviewSave.getText() + "\n" + toastStr;
+                        textviewSave.setText(s);
+                        Toast toast = Toast.makeText(MainActivity.this, toastStr, Toast.LENGTH_SHORT);
+                        toast.show();
+                        checkNumOk = 0;
+                        checkPriceOk = 0;
+                        priceBtn.setText("0");
+                        numberBtn.setText("0");
+                    }
+                    else if(checkNumOk == 1 && checkPriceOk != 1){
+                        Toast toast = Toast.makeText(MainActivity.this, "가격을 입력하셔야 합니다.", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                    else if(checkNumOk != 1&& checkPriceOk == 1){
+                        Toast toast = Toast.makeText(MainActivity.this, "수량을 입력하셔야 합니다.", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }else{
+                        Toast toast = Toast.makeText(MainActivity.this, "가격과 수량을 입력하셔야 합니다.", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+
+                }
+
             }
         });
 
@@ -457,6 +568,7 @@ public class MainActivity extends AppCompatActivity {
                 }else {
                     countStr += "000";
                 }
+                Cal();
 
             }
         });
@@ -466,6 +578,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 numberBtn.setText(countTxt1.getText());
                 layoutInput1.setVisibility(View.GONE);
+                countStr = "0";
+                checkNumOk = 1;
             }
         });
         buttonCancle1 = (Button)findViewById(R.id.button_cancle1);
@@ -474,6 +588,252 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 layoutInput1.setVisibility(View.GONE);
                 countStr = "0";
+            }
+        });
+
+////////////////////////////// dialog 3 ////////////////////////
+
+        textviewCount3 = (TextView)findViewById(R.id.textview_count3);
+        buttonTick1 = (Button)findViewById(R.id.button_tick1);
+        buttonTick1.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                textviewCount3.setText(nf.format(number3+100));
+                number3 = number3+100;
+                countStr = number3.toString();
+            }
+        });
+        buttonTick2 = (Button)findViewById(R.id.button_tick2);
+        buttonTick2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                textviewCount3.setText(nf.format(number3-100));
+                number3 = number3-100;
+                countStr = number3.toString();
+            }
+        });
+        buttonCurrent = (Button)findViewById(R.id.button_current);
+        buttonCurrent.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                textviewCount3.setText(nf.format(valueX));
+                number3 = valueX;
+                countStr = number3.toString();
+            }
+        });
+        buttonBack3 = (Button)findViewById(R.id.button_back3);
+        buttonBack3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.length() >= 3) {
+                    countStr = countStr.substring(0, countStr.length() - 1);
+                    number3 = Integer.parseInt(countStr);
+                }else if(countStr.length() == 1){
+                    countStr = "0";
+                    number3 = Integer.parseInt(countStr);
+                }else if(countStr.length() == 2){
+                    countStr = countStr.substring(0, countStr.length() -1);
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonReset3 = (Button)findViewById(R.id.button_reset3);
+        buttonReset3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                countStr = "0";
+                number3 = 0;
+                textviewCount3.setText(countStr);
+            }
+        });
+        buttonOne3 = (Button)findViewById(R.id.button_one3);
+        buttonOne3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="1";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "1";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+
+            }
+        });
+        buttonTwo3 = (Button)findViewById(R.id.button_two3);
+        buttonTwo3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="2";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "2";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonThree3 = (Button)findViewById(R.id.button_three3);
+        buttonThree3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="3";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "3";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonFour3 = (Button)findViewById(R.id.button_four3);
+        buttonFour3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="4";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "4";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonFive3 = (Button)findViewById(R.id.button_five3);
+        buttonFive3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="5";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "5";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonSix3 = (Button)findViewById(R.id.button_six3);
+        buttonSix3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="6";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "6";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonSeven3 = (Button)findViewById(R.id.button_seven3);
+        buttonSeven3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="7";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "7";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonEight3 = (Button)findViewById(R.id.button_eight3);
+        buttonEight3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="8";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "8";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonNine3 = (Button)findViewById(R.id.button_nine3);
+        buttonNine3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="9";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "9";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonZero3 = (Button)findViewById(R.id.button_zero3);
+        buttonZero3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="0";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "0";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonZeroZero3 = (Button)findViewById(R.id.button_zerozero3);
+        buttonZeroZero3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="0";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "00";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonZeroZeroZero3 = (Button)findViewById(R.id.button_zerozerozero3);
+        buttonZeroZeroZero3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(countStr.equals("0")){
+                    countStr="0";
+                    number3 = Integer.parseInt(countStr);
+                }else {
+                    countStr += "000";
+                    number3 = Integer.parseInt(countStr);
+                }
+                textviewCount3.setText(nf.format(number3));
+            }
+        });
+        buttonSubmit3 = (Button)findViewById(R.id.button_submit3);
+        buttonSubmit3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                priceBtn.setText(textviewCount3.getText());
+                layoutInput3.setVisibility(View.GONE);
+                countStr = "0";
+                number3 = Integer.parseInt(countStr);
+                checkPriceOk = 1;
+            }
+        });
+        buttonCancle3 = (Button)findViewById(R.id.button_cancle3);
+        buttonCancle3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                layoutInput3.setVisibility(View.GONE);
+                countStr = "0";
+                number3 = Integer.parseInt(countStr);
             }
         });
 
@@ -496,6 +856,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
 
 
 }
